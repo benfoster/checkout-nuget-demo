@@ -14,16 +14,17 @@ artifacts:
   name: NuGet
 deploy:  
 - provider: NuGet
-  server: https://www.myget.org/F/ben-foster-cko/api/v2/package
+  server: https://www.myget.org/F/ben-foster-cko-dev/api/v2/package
   api_key:
     secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
   skip_symbols: true
   on:
     branch: master
-# - provider: NuGet
-#   name: production
-#   api_key:
-#     secure: K9fYWxy1AnyvMSW/zrMyiH5OiCZGBNjh9qH/K8OcSYfElGWpm5/qJD9wqH/Uw==
-#   on:
-#     branch: master
-#     appveyor_repo_tag: true
+- provider: NuGet
+  name: production
+  server: https://www.myget.org/F/ben-foster-cko/api/v2/package
+  api_key:
+    secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
+  on:
+    branch: master
+    appveyor_repo_tag: true
