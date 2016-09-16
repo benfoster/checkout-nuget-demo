@@ -1,5 +1,19 @@
 ﻿{
-  "version": "1.0.0-beta-*",
+  "version": "1.0.0-pre-*",
+  "description": "Nuget CI/Pack Demo",
+  "authors": [
+    "Ben Foster (@benfosterdev)"
+  ],
+  "copyright": "Copyright Ben Foster",
+    
+  "packOptions": {
+    "licenseUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo/blob/master/LICENSE",
+    "projectUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ben-foster-cko/checkout-nuget-demo.git"
+    }
+  },
 
   "dependencies": {
     "NETStandard.Library": "1.6.0"
@@ -9,10 +23,5 @@
     "netstandard1.6": {
       "imports": "dnxcore50"
     }
-  },
-  
-  "packOptions": {
-    "licenseUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo/blob/master/LICENSE",
-    "projectUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo",
   }
 }
