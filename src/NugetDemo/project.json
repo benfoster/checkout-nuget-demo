@@ -12,7 +12,7 @@
   },
   
   "packOptions": {
-    "licenseUrl": "https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders/blob/master/LICENSE",
-    "projectUrl": "https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders/",
+    "licenseUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo/blob/master/LICENSE",
+    "projectUrl": "https://github.com/ben-foster-cko/checkout-nuget-demo",
   }
 }
