@@ -110,7 +110,7 @@ Task("Docs")
         // IssueTrackerPassword     = "password",
         // IssueTrackerProjectId    = "1234",
         // Categories               = "Category1",
-         Version                  = "1.2.3.4",
+        //Version                  = "1.2.3.4",
          AllLabels                = true
     });
 });
