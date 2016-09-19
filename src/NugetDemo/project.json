@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.1-pre-*", 
+  "version": "1.0.3-pre-*", 
   "description": "Nuget CI/Pack Demo",
   "authors": [
     "Ben Foster (@benfosterdev)"
