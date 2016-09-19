@@ -1,3 +1,5 @@
+#tool "nuget:?package=GitReleaseNotes"
+
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
 
@@ -91,9 +93,32 @@ Task("Restore")
     DotNetCoreRestore(testsPath, settings);
 });
 
+Task("Docs")
+    .Does(() => 
+{
+    GitReleaseNotes("artifacts/releasenotes.md", new GitReleaseNotesSettings {
+        WorkingDirectory         = ".",
+        Verbose                  = true,
+        //IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
+         AllTags                  = true,
+        // RepoUserName             = "bob",
+        // RepoPassword             = "password",
+        //RepoUrl                  = "https://github.com/ben-foster-cko/checkout-nuget-demo",
+        //RepoBranch               = "master",
+        // IssueTrackerUrl          = "http://myissuetracker.co.uk",
+        // IssueTrackerUserName     = "bob",
+        // IssueTrackerPassword     = "password",
+        // IssueTrackerProjectId    = "1234",
+        // Categories               = "Category1",
+         Version                  = "1.2.3.4",
+         AllLabels                = true
+    });
+});
+
 Task("Default")
   .IsDependentOn("Build")
   .IsDependentOn("RunTests")
-  .IsDependentOn("Pack");
+  .IsDependentOn("Pack")
+  .IsDependentOn("Docs");
 
 RunTarget(target);
