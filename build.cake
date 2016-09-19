@@ -65,7 +65,7 @@ Task("Pack")
     };
 
     // add build suffix for CI builds
-    if(!isLocalBuild && AppVeyor.Environment.Repository.Tag == null)
+    if(!isLocalBuild && !AppVeyor.Environment.Repository.Tag.IsTag)
     {
         settings.VersionSuffix = AppVeyor.Environment.Build.Number.ToString().PadLeft(4,'0');
     }
