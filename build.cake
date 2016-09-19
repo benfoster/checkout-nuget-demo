@@ -99,26 +99,25 @@ Task("Docs")
     GitReleaseNotes("artifacts/releasenotes.md", new GitReleaseNotesSettings {
         WorkingDirectory         = ".",
         Verbose                  = true,
-        //IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
+        // IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
          AllTags                  = true,
         // RepoUserName             = "bob",
         // RepoPassword             = "password",
-        //RepoUrl                  = "https://github.com/ben-foster-cko/checkout-nuget-demo",
-        //RepoBranch               = "master",
+        // RepoUrl                  = "https://github.com/ben-foster-cko/checkout-nuget-demo",
+        // RepoBranch               = "master",
         // IssueTrackerUrl          = "http://myissuetracker.co.uk",
         // IssueTrackerUserName     = "bob",
         // IssueTrackerPassword     = "password",
         // IssueTrackerProjectId    = "1234",
         // Categories               = "Category1",
-        //Version                  = "1.2.3.4",
-         AllLabels                = true
+        // Version                  = "1.2.3.4",
+        AllLabels                = true
     });
 });
 
 Task("Default")
   .IsDependentOn("Build")
   .IsDependentOn("RunTests")
-  .IsDependentOn("Pack")
-  .IsDependentOn("Docs");
+  .IsDependentOn("Pack");
 
 RunTarget(target);
