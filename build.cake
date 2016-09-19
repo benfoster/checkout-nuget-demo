@@ -64,12 +64,10 @@ Task("Pack")
         OutputDirectory = buildArtifacts,
     };
 
-    Information(string.Format("Tag: {0}|{1}", AppVeyor.Environment.Repository.Tag.IsTag,AppVeyor.Environment.Repository.Tag.Name ));
-
     // add build suffix for CI builds
     if(!isLocalBuild && !AppVeyor.Environment.Repository.Tag.IsTag)
     {
-        settings.VersionSuffix = AppVeyor.Environment.Build.Number.ToString().PadLeft(4,'0');
+        settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(4,'0');
     }
 
     DotNetCorePack(packPath, settings);
