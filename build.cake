@@ -70,8 +70,6 @@ Task("Pack")
         settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
     }
 
-    settings.VersionSuffix = "build0021";
-
     DotNetCorePack(packPath, settings);
 });
 
