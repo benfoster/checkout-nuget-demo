@@ -64,10 +64,8 @@ Task("Pack")
         OutputDirectory = buildArtifacts,
     };
 
-    AppVeyor.Environment.
-
     // add build suffix for CI builds
-    if(!isLocalBuild && AppVeyor.Repository.Tag == null)
+    if(!isLocalBuild && AppVeyor.Environment.Repository.Tag == null)
     {
         settings.VersionSuffix = AppVeyor.Environment.Build.Number.ToString().PadLeft(4,'0');
     }
