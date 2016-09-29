@@ -2,6 +2,7 @@
 {
     public static class StringExtensions
     {
+        // Some docs
         public static string Truncate(this string source, int maxLength)
         {
             if (source == null)
