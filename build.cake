@@ -65,6 +65,9 @@ Task("Pack")
         Configuration = configuration,
         OutputDirectory = buildArtifacts,
     };
+    
+    Information("AppVeyor Build Version: " + AppVeyor.Environment.Build.Version);
+    Information("AppVeyor Build Number: " + AppVeyor.Environment.Build.Number.ToString());
 
     // add build suffix for CI builds
     if(!isLocalBuild && !AppVeyor.Environment.Repository.Tag.IsTag)
