@@ -96,31 +96,31 @@ Task("Restore")
     DotNetCoreRestore(testsPath, settings);
 });
 
-Task("Docs")
+Task("ReleaseNotes")
     .Does(() => 
 {
-    GitReleaseNotes("artifacts/releasenotes.md", new GitReleaseNotesSettings {
-        WorkingDirectory         = ".",
-        Verbose                  = true,
-        // IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
-         AllTags                  = true,
-        // RepoUserName             = "bob",
-        // RepoPassword             = "password",
-        // RepoUrl                  = "https://github.com/ben-foster-cko/checkout-nuget-demo",
-        // RepoBranch               = "master",
-        // IssueTrackerUrl          = "http://myissuetracker.co.uk",
-        // IssueTrackerUserName     = "bob",
-        // IssueTrackerPassword     = "password",
-        // IssueTrackerProjectId    = "1234",
-        // Categories               = "Category1",
-        // Version                  = "1.2.3.4",
-        AllLabels                = true
-    });
+    FilePath changeLogPath = File("./artifacts/changelog.md");
+    IEnumerable<string> lines;
+    var exitCode = StartProcess("git", new  ProcessSettings { Arguments = "log --no-merges --oneline --decorate --pretty=format:\"* %s\"", RedirectStandardOutput = true }, out lines);
+    if (exitCode == 0)
+    {
+        using(var stream = Context.FileSystem.GetFile(changeLogPath).OpenWrite())
+        {
+            using(var writer = new System.IO.StreamWriter(stream, Encoding.UTF8))
+            {
+                foreach(var line in lines)
+                {
+                    writer.WriteLine(line);
+                }
+            }
+        }
+    }
 });
 
 Task("Default")
   .IsDependentOn("Build")
   .IsDependentOn("RunTests")
-  .IsDependentOn("Pack");
+  .IsDependentOn("Pack")
+  .IsDependentOn("ReleaseNotes");
 
 RunTarget(target);
