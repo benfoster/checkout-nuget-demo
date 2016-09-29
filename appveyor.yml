@@ -12,6 +12,8 @@ test: off
 artifacts:  
 - path: .\artifacts\**\*.nupkg
   name: NuGet
+- path: .\artifacts\changelog.md
+  name: Release Notes
 deploy:  
 - provider: NuGet
   server: https://www.myget.org/F/ben-foster-cko-dev/api/v2/package
