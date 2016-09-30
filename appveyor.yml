@@ -1,4 +1,9 @@
 version: '1.0.5-build{build}'  
+environment:
+  CAKE_GITHUB_USERNAME:
+    secure: /kVHbmVmEdPt1l6cyloTNA==
+  CAKE_GITHUB_TOKEN:
+    secure: S4WW3iqKOGImuYhWA0XPtWppxv/+2fUhkD95eD7+Owk/SzGJj8tDp0n+a0PFAz3I
 pull_requests:  
   do_not_increment_build_number: true
 branches:  

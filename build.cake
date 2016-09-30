@@ -1,4 +1,4 @@
-#tool "nuget:?package=GitReleaseNotes"
+#tool "nuget:?package=GitReleaseManager"
 
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
@@ -11,6 +11,24 @@ var packPath            = Directory("./src/NugetDemo");
 var sourcePath          = Directory("./src");
 var testsPath           = Directory("test");
 var buildArtifacts      = Directory("./artifacts");
+
+Task("Clean")
+    .Does(() =>
+{
+    CleanDirectories(new DirectoryPath[] { buildArtifacts });
+});
+
+Task("Restore")
+    .Does(() =>
+{
+    var settings = new DotNetCoreRestoreSettings
+    {
+        Sources = new [] { "https://api.nuget.org/v3/index.json" }
+    };
+
+    DotNetCoreRestore(sourcePath, settings);
+    DotNetCoreRestore(testsPath, settings);
+});
 
 Task("Build")
     .IsDependentOn("Clean")
@@ -32,8 +50,7 @@ Task("Build")
 });
 
 Task("RunTests")
-    .IsDependentOn("Restore")
-    .IsDependentOn("Clean")
+    .IsDependentOn("Build")
     .Does(() =>
 {
     var projects = GetFiles("./test/**/project.json");
@@ -56,8 +73,7 @@ Task("RunTests")
 });
 
 Task("Pack")
-    .IsDependentOn("Restore")
-    .IsDependentOn("Clean")
+    .IsDependentOn("RunTests")
     .Does(() =>
 {
     var settings = new DotNetCorePackSettings
@@ -78,25 +94,9 @@ Task("Pack")
     DotNetCorePack(packPath, settings);
 });
 
-Task("Clean")
-    .Does(() =>
-{
-    CleanDirectories(new DirectoryPath[] { buildArtifacts });
-});
-
-Task("Restore")
-    .Does(() =>
-{
-    var settings = new DotNetCoreRestoreSettings
-    {
-        Sources = new [] { "https://api.nuget.org/v3/index.json" }
-    };
-
-    DotNetCoreRestore(sourcePath, settings);
-    DotNetCoreRestore(testsPath, settings);
-});
 
 Task("ReleaseNotes")
+    .IsDependentOn("Pack")
     .Does(() => 
 {
     FilePath changeLogPath = File("./artifacts/changelog.md");
@@ -115,6 +115,21 @@ Task("ReleaseNotes")
             }
         }
     }
+});
+
+Task("GitHubRelease")
+    .IsDependentOn("ReleaseNotes")
+    .Does(() => 
+{
+    var settings = new GitReleaseManagerCreateSettings  
+    {
+        InputFilePath = "./artifacts/changelog.md",
+        Prerelease = false,
+        Name =  "1.0.5",
+        TargetCommitish = "master" // The commit to tag. Can be a branch or SHA. Defaults to repository's default branch.
+    };
+
+    GitReleaseManagerCreate(EnvironmentVariable("CAKE_GITHUB_USERNAME"), EnvironmentVariable("CAKE_GITHUB_TOKEN"), "ben-foster-cko", "checkout-nuget-demo", settings);
 });
 
 Task("Default")
