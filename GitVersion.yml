@@ -6,5 +6,6 @@ branches:
     mode: ContinuousDeployment
     increment: Patch
     tag: beta
+    
   develop:
     increment: Patch
