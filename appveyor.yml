@@ -19,9 +19,9 @@ artifacts:
 
 deploy:  
 - provider: NuGet
-  server: https://www.myget.org/F/ben-foster-cko-dev/api/v2/package
+  server: https://www.myget.org/F/benfoster-ci-dev/api/v2/package
   api_key:
-    secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
+    secure: WUL4RPDoqA/nJn9Q8nMXaQvxQY0eyuxYRS27NxzPiofzwvjtasaXI645hnP1CHTx
   skip_symbols: true
   on:
     branch: develop
