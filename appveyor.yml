@@ -1,4 +1,4 @@
-version: '1.0.5-build{build}'  
+version: '{build}'  
 environment:
   CAKE_GITHUB_USERNAME:
     secure: /kVHbmVmEdPt1l6cyloTNA==
@@ -8,31 +8,21 @@ pull_requests:
   do_not_increment_build_number: true
 branches:  
   only:
-  - master
+  - develop
+  - /release\/.*/
 nuget:  
   disable_publish_on_pr: true
 build_script:  
-- ps: .\build.ps1
+- ps: .\build.ps1 -experimental
 test: off  
 artifacts:  
-- path: .\artifacts\**\*.nupkg
-  name: NuGet
-- path: .\artifacts\changelog.md
-  name: Release Notes
+- path: .\artifacts\**\*.*
+
 deploy:  
 - provider: NuGet
-  server: https://www.myget.org/F/ben-foster-cko-dev/api/v2/package
+  server: https://www.myget.org/F/benfoster-ci-dev/api/v2/package
   api_key:
-    secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
+    secure: WUL4RPDoqA/nJn9Q8nMXaQvxQY0eyuxYRS27NxzPiofzwvjtasaXI645hnP1CHTx
   skip_symbols: true
   on:
-    branch: master
-- provider: NuGet
-  name: production
-  server: https://www.myget.org/F/ben-foster-cko/api/v2/package
-  api_key:
-    secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
-  skip_symbols: true
-  on:
-    branch: master
-    appveyor_repo_tag: true
+    branch: develop
