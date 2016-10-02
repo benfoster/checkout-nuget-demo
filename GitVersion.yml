@@ -1,11 +1,10 @@
 mode: ContinuousDelivery
 ignore:
   sha: []
-
 branches:
   release[/-]:
     mode: ContinuousDeployment
     increment: Patch
-    tag: rc
+    tag: beta
   develop:
     increment: Patch
