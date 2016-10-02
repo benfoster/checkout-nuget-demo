@@ -10,5 +10,11 @@ namespace NugetDemo.Tests
         {
             Assert.Equal("Welcome", "Welcome to .NET Core".Truncate(7));
         }
+
+        [Fact]
+        public void Should_return_null_if_source_is_null() 
+        {
+            Assert.Equal(null, default(string).Truncate(5));
+        }
     }
 }
