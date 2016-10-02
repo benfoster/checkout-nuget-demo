@@ -198,8 +198,10 @@ FakesAssemblies/
 docs/_build/
 
 # Cake Build Related
-tools/Cake/
-tools/GitReleaseManager/
 tools/packages.config.md5sum
 .idea
-artifacts
+/tools/
+/artifacts/
+
+
+*.DS_Store

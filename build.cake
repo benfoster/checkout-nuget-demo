@@ -1,7 +1,15 @@
-#tool "nuget:?package=GitReleaseManager"
+//////////////////////////////////////////////////////////////////////
+// TOOLS
+//////////////////////////////////////////////////////////////////////
+#tool "nuget:?package=GitVersion.CommandLine"
+#addin "MagicChunks"
 
-var target          = Argument("target", "Default");
-var configuration   = Argument<string>("configuration", "Release");
+//////////////////////////////////////////////////////////////////////
+// ARGUMENTS
+//////////////////////////////////////////////////////////////////////
+var target = Argument("target", "Default");
+var configuration = Argument("configuration", "Release");
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -12,13 +20,47 @@ var sourcePath          = Directory("./src");
 var testsPath           = Directory("test");
 var buildArtifacts      = Directory("./artifacts");
 
-Task("Clean")
+var isContinuousIntegrationBuild = !BuildSystem.IsLocalBuild;
+
+var gitVersionInfo = GitVersion(new GitVersionSettings {
+    OutputType = GitVersionOutput.Json
+});
+
+var nugetVersion = isContinuousIntegrationBuild ? gitVersionInfo.NuGetVersion : "0.0.0";
+
+///////////////////////////////////////////////////////////////////////////////
+// SETUP / TEARDOWN
+///////////////////////////////////////////////////////////////////////////////
+Setup(context =>
+{
+    Information("Building DotNetCoreBuild v{0}", nugetVersion);
+});
+
+Teardown(context =>
+{
+    Information("Finished running tasks.");
+});
+
+//////////////////////////////////////////////////////////////////////
+//  PRIVATE TASKS
+//////////////////////////////////////////////////////////////////////
+
+Task("__Default")
+    .IsDependentOn("__Clean")
+    .IsDependentOn("__Restore")
+    .IsDependentOn("__UpdateAssemblyVersionInformation")
+    .IsDependentOn("__Build")
+    .IsDependentOn("__Test")
+    .IsDependentOn("__UpdateProjectJsonVersion")
+    .IsDependentOn("__Pack");
+
+Task("__Clean")
     .Does(() =>
 {
     CleanDirectories(new DirectoryPath[] { buildArtifacts });
 });
 
-Task("Restore")
+Task("__Restore")
     .Does(() =>
 {
     var settings = new DotNetCoreRestoreSettings
@@ -30,9 +72,21 @@ Task("Restore")
     DotNetCoreRestore(testsPath, settings);
 });
 
-Task("Build")
-    .IsDependentOn("Clean")
-    .IsDependentOn("Restore")
+Task("__UpdateAssemblyVersionInformation")
+    .WithCriteria(isContinuousIntegrationBuild)
+    .Does(() =>
+{
+     GitVersion(new GitVersionSettings {
+        UpdateAssemblyInfo = true,
+        //UpdateAssemblyInfoFilePath = globalAssemblyFile
+    });
+
+    Information("AssemblyVersion -> {0}", gitVersionInfo.AssemblySemVer);
+    Information("AssemblyFileVersion -> {0}", $"{gitVersionInfo.MajorMinorPatch}.0");
+    Information("AssemblyInformationalVersion -> {0}", gitVersionInfo.InformationalVersion);
+});
+
+Task("__Build")
     .Does(() =>
 {
 	var projects = GetFiles("./**/project.json");
@@ -42,15 +96,13 @@ Task("Build")
         var settings = new DotNetCoreBuildSettings 
         {
             Configuration = configuration
-            // Runtime = IsRunningOnWindows() ? null : "unix-x64"
         };
 
 	    DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
     }
 });
 
-Task("RunTests")
-    .IsDependentOn("Build")
+Task("__Test")
     .Does(() =>
 {
     var projects = GetFiles("./test/**/project.json");
@@ -72,8 +124,19 @@ Task("RunTests")
     }
 });
 
-Task("Pack")
-    .IsDependentOn("RunTests")
+Task("__UpdateProjectJsonVersion")
+    //.WithCriteria(isContinuousIntegrationBuild)
+    .Does(() =>
+{
+    var projectToPackagePackageJson = $"{packPath}/project.json";
+    Information("Updating {0} version -> {1}", projectToPackagePackageJson, nugetVersion);
+
+    TransformConfig(projectToPackagePackageJson, projectToPackagePackageJson, new TransformationCollection {
+        { "version", nugetVersion }
+    });
+});
+
+Task("__Pack")
     .Does(() =>
 {
     var settings = new DotNetCorePackSettings
@@ -81,9 +144,6 @@ Task("Pack")
         Configuration = configuration,
         OutputDirectory = buildArtifacts,
     };
-    
-    Information("AppVeyor Build Version: " + AppVeyor.Environment.Build.Version);
-    Information("AppVeyor Build Number: " + AppVeyor.Environment.Build.Number.ToString());
 
     // add build suffix for CI builds
     if(!isLocalBuild && !AppVeyor.Environment.Repository.Tag.IsTag)
@@ -96,7 +156,7 @@ Task("Pack")
 
 
 Task("ReleaseNotes")
-    .IsDependentOn("Pack")
+    .IsDependentOn("__Pack")
     .Does(() => 
 {
     FilePath changeLogPath = File("./artifacts/changelog.md");
@@ -132,10 +192,13 @@ Task("GitHubRelease")
     GitReleaseManagerCreate(EnvironmentVariable("CAKE_GITHUB_USERNAME"), EnvironmentVariable("CAKE_GITHUB_TOKEN"), "ben-foster-cko", "checkout-nuget-demo", settings);
 });
 
+//////////////////////////////////////////////////////////////////////
+// TASKS
+//////////////////////////////////////////////////////////////////////
 Task("Default")
-  .IsDependentOn("Build")
-  .IsDependentOn("RunTests")
-  .IsDependentOn("Pack")
-  .IsDependentOn("ReleaseNotes");
+    .IsDependentOn("__Default");
 
+//////////////////////////////////////////////////////////////////////
+// EXECUTION
+//////////////////////////////////////////////////////////////////////
 RunTarget(target);
