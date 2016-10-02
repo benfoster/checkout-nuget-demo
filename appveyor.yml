@@ -10,6 +10,7 @@ branches:
   only:
   - develop
   - /release\/.*/
+  - /feature\/.*/
 nuget:  
   disable_publish_on_pr: true
 build_script:  
