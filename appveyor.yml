@@ -1,4 +1,4 @@
-version: '1.0.5-build{build}'  
+version: '{build}'  
 environment:
   CAKE_GITHUB_USERNAME:
     secure: /kVHbmVmEdPt1l6cyloTNA==
