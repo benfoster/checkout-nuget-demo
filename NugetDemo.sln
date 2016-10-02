@@ -7,10 +7,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NugetDemo", "src\NugetDemo\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B595DBE9-56D1-4C62-B30A-D62969F49EB2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NugetDem.Tests", "test\NugetDemo.Tests\NugetDemo.Tests.xproj", "{AE3F205E-FEBA-49E5-90A1-94A731E61A23}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NugetDemo.Tests", "test\NugetDemo.Tests\NugetDemo.Tests.xproj", "{AE3F205E-FEBA-49E5-90A1-94A731E61A23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC81776A-0474-4BDF-92DA-7D7BAA9C09BD}"
 	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
 		global.json = global.json
 	EndProjectSection
 EndProject

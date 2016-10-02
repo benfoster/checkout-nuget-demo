@@ -16,3 +16,12 @@ build_script:
 test: off  
 artifacts:  
 - path: .\artifacts\**\*.*
+
+deploy:  
+- provider: NuGet
+  server: https://www.myget.org/F/ben-foster-cko-dev/api/v2/package
+  api_key:
+    secure: cywvUXN90tLAa82KXWVO2G14C1aWvlgrpgxpL7i2oALjKtenX3YGPxyIQUlNbiAM
+  skip_symbols: true
+  on:
+    branch: develop

@@ -125,7 +125,7 @@ Task("__Test")
 });
 
 Task("__UpdateProjectJsonVersion")
-    //.WithCriteria(isContinuousIntegrationBuild)
+    .WithCriteria(isContinuousIntegrationBuild)
     .Does(() =>
 {
     var projectToPackagePackageJson = $"{packPath}/project.json";
